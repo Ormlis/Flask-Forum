@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% from "macros.html" import render_field %}
+    <form class="boxes shadow_box" action="" method="post">
+        <h1 class="text-center text_title">Authorization</h1>
+        {{ form.hidden_tag() }}
+        {{ render_field(form.email) }}
+        {{ render_field(form.password) }}
+        <p class="text_title">{{ form.remember_me() }} {{ form.remember_me.label }}</p>
+        <p> {{ form.submit(type="submit", class="btn btn-secondary") }}</p>
+        <div>{{ message }}</div>
+    </form>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from "macros.html" import render_field %}
+<form class="boxes shadow_box" action="" method="post">
+    <div>
+        <h1 class="text_title text-center">Registration</h1>
+    </div>
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    <dl>>
+    {{ render_field(form.email) }}
+    {{ render_field(form.password) }}
+    {{ render_field(form.password_again) }}
+    {{ render_field(form.nickname) }}
+    {{ render_field(form.name) }}
+    {{ render_field(form.surname) }}
+    {{ render_field(form.age) }}
+    </dl>
+    <p>{{ form.submit(type="submit", class="btn btn-secondary") }}</p>
+    {{message}}
+</form>
+{% endblock %}

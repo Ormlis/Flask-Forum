@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+        {% if current_user.role >= 3%}
+                <a class="text_title shadow_box boxes text-center btn btn-dark" href="/topic/new">Create new topic</a>
+        {% endif %}
+    {% endif %}
+    <div class="shadow_box boxes">
+        <h1 class="text_title text-center">Topics</h1><br>
+        {% for topic in topics %}
+        <div class="field text_title text-left">
+            <h3 class="text_title"> {{ topic.title }} </h3>
+            <div class="margin-left">
+                <h5 class="text-muted">
+                    {{ topic.description }}
+                </h5>
+             </div>
+            <ul>
+            {% for subtopic in topic.subtopics %}
+            <li class="text_title">
+                <a class="text-info" href="/topic/{{ topic.id }}/subtopic/{{ subtopic.id }}"> {{ subtopic.title }} </a>
+                <p class="text-muted">
+                    {{ subtopic.description }}
+                </p>
+            </li>
+            {% endfor %}
+            </ul>
+            {% if current_user.is_authenticated %}
+                {% if current_user.role >= 3%}
+                        <a class="btn btn-secondary" href="/topic/{{topic.id}}/subtopic/new">
+                            Create new subtopic</a>
+                {% endif %}
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

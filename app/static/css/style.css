@@ -1,0 +1,31 @@
+.shadow_box {
+    box-shadow: 7px 7px 7px 3px rgba(35,42,48,0.5);
+}
+
+.boxes {
+    background-color: #343a40;
+    margin-top: 15px;
+    padding: 10px;
+    display: inline-block;
+    width: 100%;
+    font-family: "Serif", sans-serif;
+    border: 5px solid rgba(39,129,157,0.5);
+}
+
+.text_title {
+    color: azure;
+}
+
+.field {
+    border: 5px solid dimgray;
+    margin-top: 15px;
+}
+
+.full_width {
+    width: 95%;
+    margin-left: 2%;
+}
+
+.margin-left {
+    margin-left: 5%;
+}
