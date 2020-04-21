@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+        {% if current_user.role >= 3%}
+                <a class="text_title shadow_box boxes text-center btn btn-dark"
+                   href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/edit">Edit subtopic</a>
+        {% endif %}
+    {% endif %}
+    <div class="shadow_box boxes">
+        <h1 class="text_title text-center">{{ topic.title }} / {{ subtopic.title }}</h1><br>
+        {% if current_user.is_authenticated %}
+            {% if current_user.role >= 1%}
+                    <a class="btn btn-secondary"
+                       href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/new">
+                        Create new post
+                    </a>
+            {% endif %}
+        {% endif %}
+        {% for post in subtopic.posts %}
+        <div class="field text_title text-left">
+            <h3 class="text_title"> {{ post.title }} </h3>
+            <div class="margin-left">
+                <h5 class="text-muted">
+                    {{ post.description|safe }}
+                </h5>
+             </div>
+            <a class="btn btn-info"
+            href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/{{post.id}}">
+                See more...
+            </a>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}

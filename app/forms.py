@@ -59,3 +59,21 @@ class RegisterForm(FlaskForm):
     surname = StringField('Surname', validators=[DataRequired()])
     age = IntegerField('Age', validators=[DataRequired()])
     submit = SubmitField('Sign up')
+
+
+class TopicForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = TextAreaField('Description', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class PostForm(FlaskForm):
+    title = StringField('Title', validators=[DataRequired()])
+    description = CKEditorField('Description', validators=[DataRequired()])
+    lvl_access = SelectField('Lvl access', choices=[
+        (0, 'All'),
+        (1, 'Certified'),
+        (2, 'Moderator'),
+        (3, 'Admin')
+    ], coerce=int)
+    submit = SubmitField('Submit')

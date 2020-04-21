@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ ckeditor.load() }}
+{% from "macros.html" import render_field %}
+<form class="boxes shadow_box" action="" method="post">
+    <h1 class="text_title text-center"> {{ title_form }}</h1>
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    {{ render_field(form.title) }}
+    {{ render_field(form.description) }}
+    {{ render_field(form.lvl_access) }}
+    <br>
+    <p>{{ form.submit(type="submit", class="btn btn-secondary") }}</p>
+    {{message}}
+</form>
+{% endblock %}
