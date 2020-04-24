@@ -1,7 +1,6 @@
 from flask import jsonify
-from flask_restful import reqparse, abort, Api, Resource
-from db_session import create_session
-from models import *
+from flask_restful import reqparse, abort, Resource
+from data import create_session, User, Topic, SubTopic, Post, Comment
 
 
 def abort_if_object_not_found(object_id, object_type):
@@ -12,6 +11,7 @@ def abort_if_object_not_found(object_id, object_type):
 
 
 class UserResource(Resource):
+
     def get(self, user_id):
         abort_if_object_not_found(user_id, User)
         session = create_session()
@@ -56,6 +56,13 @@ class UserListResource(Resource):
 
 
 class CommentResource(Resource):
+    parser = reqparse.RequestParser()
+    parser.add_argument('text')
+    parser.add_argument('post_id', type=int)
+    parser.add_argument('author_id', type=int)
+    parser.add_argument('reputation', type=int)
+    parser.add_argument('by_user', type=int)
+
     def get(self, comment_id):
         abort_if_object_not_found(comment_id, Comment)
         session = create_session()
@@ -68,6 +75,30 @@ class CommentResource(Resource):
         session = create_session()
         comment = session.query(Comment).get(comment_id)
         session.delete(comment)
+        session.commit()
+        return jsonify({'success': 'OK'})
+
+    def put(self, comment_id):
+        args = self.parser.parse_args()
+        abort_if_object_not_found(comment_id, Comment)
+        session = create_session()
+        comment = session.query(Comment).get(comment_id)
+        user = comment.user
+        by_user_id = args.get('by_user', 0)
+        byuser = session.query(User).get(by_user_id)
+        if user and byuser:
+            if comment in byuser.liked:
+                user.reputation -= 1
+                byuser.liked.remove(comment)
+            elif comment in byuser.disliked:
+                user.reputation += 1
+                byuser.disliked.remove(comment)
+            if args.get('reputation', 0) == 1:
+                user.reputation += 1
+                byuser.liked.append(comment)
+            elif args.get('reputation', 0) == -1:
+                user.reputation -= 1
+                byuser.disliked.append(comment)
         session.commit()
         return jsonify({'success': 'OK'})
 

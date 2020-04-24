@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% from "macros.html" import render_field %}
+<form class="boxes shadow_box" action="" method="post" enctype="multipart/form-data">
+    <h1 class="text_title text-center"> {{ title_form }}</h1>
+    {{ form.hidden_tag() }}
+    {{ form.csrf_token }}
+    {{ render_field(form.name) }}
+    {{ render_field(form.surname) }}
+    {{ render_field(form.age) }}
+    <div class="text_title">
+        <dd>{{ form.avatar()|safe }}
+        {% if form.avatar.errors %}
+        <ul class=errors>
+            {% for error in form.avatar.errors %}
+            <li class="text_title">{{ error }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </dd>
+    </div>
+    <p>{{ form.submit(type="submit", class="btn btn-secondary") }}</p>
+</form>
+{% endblock %}

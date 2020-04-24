@@ -1,3 +1,4 @@
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import engine_from_config
@@ -17,12 +18,10 @@ fileConfig(config.config_file_name)
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-
 import sys
-
-sys.path.insert(0, r'C:\Users\Ormlis\PycharmProjects\Forum')
+sys.path.insert(0, os.path.abspath(os.curdir))
 from data.db_session import SqlAlchemyBase
-from data import __all_models
+import data.__all_models
 
 target_metadata = SqlAlchemyBase.metadata
 
@@ -51,6 +50,8 @@ def run_migrations_offline():
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
+        render_as_batch=True,
+        compare_type=True
     )
 
     with context.begin_transaction():

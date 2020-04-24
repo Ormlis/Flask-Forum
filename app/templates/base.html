@@ -8,18 +8,22 @@
           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
           crossorigin="anonymous">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.min.js" integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
     <title>{{title}}</title>
 </head>
-<body link="#f0f8ff" alink="#f0f8ff" vlink="#f0f8ff">
+<body style="background-color: rgba(60,63,65,0.5);">
 <header>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="/"><h1>TechnoForum</h1></a>
         {% if current_user.is_authenticated %}
-            <a class="navbar-brand" href="/logout">{{ current_user.name }}</a>
+            <p>
+                <a class="navbar-brand" href="/user/{{ current_user.id }}">{{ current_user.nickname }}</a>
+                <a class="btn btn-light" href="/logout">Logout</a>
+            </p>
         {% else %}
             <p>
-                <a class="btn btn-secondary " href="/registration">Зарегистрироваться</a>
-                <a class="btn btn-light" href="/login">Войти</a>
+                <a class="btn btn-secondary " href="/registration">Sign up</a>
+                <a class="btn btn-light" href="/login">Sign in</a>
             </p>
         {% endif %}
     </nav>

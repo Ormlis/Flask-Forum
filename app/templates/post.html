@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% if current_user.is_authenticated %}
+        {% if current_user.role >= 2 %}
+                <a class="text_title shadow_box boxes text-center btn btn-dark"
+                   href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/post/{{post.id}}/edit">
+                    Edit post</a>
+                <a class="text_title shadow_box boxes text-center btn btn-dark"
+                   href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/post/{{post.id}}/delete">
+                    Delete post</a>
+        {% endif %}
+    {% endif %}
+    <div class="shadow_box boxes">
+        <h1 class="text_title text-center">{{ topic.title }} /
+            {{ subtopic.title }} / {{ post.title }}</h1><br>
+        <div class="field text_title text-center">
+            <h5>
+                {{ post.description|safe }}
+            </h5>
+        </div>
+        {% if current_user.is_authenticated %}
+            <div class="new_comment">
+                {% from "macros.html" import render_field %}
+                {{ ckeditor.load() }}
+                <form class="boxes field" action="" method="post">
+                    {{ form.hidden_tag() }}
+                    {{ render_field(form.text) }}
+                    <p> {{ form.submit(type="submit", class="btn btn-secondary") }}</p>
+                </form>
+            </div>
+        {% endif %}
+        {% if current_page.items %}
+            <div class="field">
+                <nav aria-label="...">
+                  <ul class="pagination">
+                      {% if current_page.has_previous %}
+                      <li class="page-item">
+                          <a class="page-link" href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/post/{{post.id}}/page/{{current_page.previous_page}}" tabindex="-1">Previous</a>
+                        </li>
+                      {% else %}
+                      <li class="page-item disabled">
+                          <a class="page-link" href="#" tabindex="-1">Previous</a>
+                        </li>
+                      {% endif %}
+                      {% if current_page.has_next %}
+                      <li class="page-item">
+                          <a class="page-link" href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/post/{{post.id}}/page/{{current_page.next_page}}" tabindex="-1">Next</a>
+                        </li>
+                      {% else %}
+                      <li class="page-item disabled">
+                          <a class="page-link" href="#" tabindex="-1">Next</a>
+                        </li>
+                      {% endif %}
+                  </ul>
+                </nav>
+                <table class="table table-striped table-dark table-bordered">
+                    {% for comment in current_page.items %}
+                        <tr>
+                            <td width="75%">
+                                <div class="text">
+                                    {{ comment.text|safe }}
+                                </div>
+                            </td>
+                            <td class="comment-info">
+                                <div class="avatar_author text-center">
+                                    {% if comment.user.image %}
+                                        <a style="color: #CA6D75"
+                                           href="/user/{{comment.user.id}}">
+                                            <img class="avatar_comment" src="{{ url_for('static', filename='img/avatars_users/' + comment.user.id|string + '.jpg') }}" alt="">
+                                        </a>
+                                    {% else %}
+                                        <a style="color: #CA6D75"
+                                           href="/user/{{comment.user.id}}">
+                                            <img src="{{ url_for('static', filename='img/avatars_users/default.jpg') }}" alt=""
+                                            class="avatar_comment">
+                                        </a>
+                                    {% endif %}
+                                </div>
+                                <div class="text-center">
+                                    <p>Posted by
+                                    <a style="color: #CA6D75;"
+                                       href="/user/{{comment.user.id}}">
+                                        {{ comment.user.nickname }}
+                                    </a>
+                                    </p>
+                                </div>
+                                <div class="reputation_for_user">
+                                    {% if comment.id in liked %}
+                                    <button onclick="like('{{comment.id * 2}}', '{{comment.id}}', '{{current_user.id}}')" class="btn-reputation left" id="{{comment.id * 2}}" style="background-color: green">
+                                        <img src="{{ url_for('static', filename='img/icons/like.png') }}" height="20px" width="20px">
+                                    </button>
+                                    {% else %}
+                                    <button onclick="like('{{comment.id * 2}}', '{{comment.id}}', '{{current_user.id}}')" class="btn-reputation left" id="{{comment.id * 2}}">
+                                        <img src="{{ url_for('static', filename='img/icons/like.png') }}" height="20px" width="20px">
+                                    </button>
+                                    {% endif %}
+                                    {% if comment.id in disliked %}
+                                    <button onclick="dislike('{{comment.id * 2 + 1}}', '{{comment.id}}', '{{current_user.id}}')" class="btn-reputation right" id="{{comment.id * 2 + 1}}" style="background-color: red">
+                                        <img src="{{ url_for('static', filename='img/icons/dislike.png') }}" height="20px" width="20px">
+                                    </button>
+                                    {% else %}
+                                    <button onclick="dislike('{{comment.id * 2 + 1}}', '{{comment.id}}', '{{current_user.id}}')" class="btn-reputation right" id="{{comment.id * 2 + 1}}">
+                                        <img src="{{ url_for('static', filename='img/icons/dislike.png') }}" height="20px" width="20px">
+                                    </button>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endif %}
+    </div>
+<script src="{{ url_for('static', filename='js/reputation.js') }}">
+
+</script>
+{% endblock %}

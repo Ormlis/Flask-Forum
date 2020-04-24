@@ -1,6 +1,8 @@
+from flask_login import current_user
 from flask_wtf import FlaskForm
+from flask_wtf.file import FileAllowed
 from wtforms import PasswordField, SubmitField, BooleanField, StringField, TextAreaField, \
-    IntegerField, SelectField
+    IntegerField, SelectField, FileField
 from wtforms.fields.html5 import EmailField
 from wtforms.validators import DataRequired, Email, EqualTo, Length, ValidationError
 from wtforms.widgets import TextArea
@@ -27,6 +29,11 @@ def validator_password(form, field):
     for i in range(len(password) - 2):
         if password[i:i + 3].lower() in keyboard:
             raise ValidationError('Password is too easy')
+
+
+def validator_password_current(form, field):
+    if not current_user.check_password(field.data):
+        raise ValidationError('Wrong password')
 
 
 def validator_nickname_unique(form, field):
@@ -61,6 +68,14 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Sign up')
 
 
+class ProfileEditForm(FlaskForm):
+    name = StringField('Name', validators=[DataRequired()])
+    surname = StringField('Surname', validators=[DataRequired()])
+    age = IntegerField('Age', validators=[DataRequired()])
+    avatar = FileField("Avatar", validators=[FileAllowed(['jpg'])])
+    submit = SubmitField('Save')
+
+
 class TopicForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     description = TextAreaField('Description', validators=[DataRequired()])
@@ -77,3 +92,16 @@ class PostForm(FlaskForm):
         (3, 'Admin')
     ], coerce=int)
     submit = SubmitField('Submit')
+
+
+class CommentForm(FlaskForm):
+    text = CKEditorField('New comment', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField('Old password', validators=[DataRequired(),
+                                                             validator_password_current])
+    new_password = PasswordField('New password',
+                                 validators=[DataRequired(), validator_password])
+    submit = SubmitField('Change')

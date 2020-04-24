@@ -5,6 +5,15 @@ from data.db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 
+like = sa.Table('like', SqlAlchemyBase.metadata,
+                sa.Column('user_id', sa.Integer, sa.ForeignKey('users.id')),
+                sa.Column('comment_id', sa.Integer, sa.ForeignKey('comments.id')),
+                )
+dislike = sa.Table('dislike', SqlAlchemyBase.metadata,
+                   sa.Column('user_id', sa.Integer, sa.ForeignKey('users.id')),
+                   sa.Column('comment_id', sa.Integer, sa.ForeignKey('comments.id')),
+                   )
+
 
 class User(SqlAlchemyBase, UserMixin):
     __tablename__ = 'users'
@@ -18,6 +27,17 @@ class User(SqlAlchemyBase, UserMixin):
     hashed_password = sa.Column(sa.String, nullable=True)
     role = sa.Column(sa.Integer, default=0)
     first_visit = sa.Column(sa.Date, default=datetime.datetime.today())
+    image = sa.Column(sa.String)
+    reputation = sa.Column(sa.Integer, default=0)
+
+    liked = orm.relationship('Comment',
+                             secondary=like,
+                             backref='likers',
+                             lazy='dynamic')
+    disliked = orm.relationship('Comment',
+                                secondary=dislike,
+                                backref='dislikers',
+                                lazy='dynamic')
 
     posts = orm.relation('Post', back_populates='user')
     comments = orm.relation('Comment', back_populates='user')
@@ -62,6 +82,7 @@ class Post(SqlAlchemyBase):
     author_id = sa.Column(sa.Integer, sa.ForeignKey('users.id'), nullable=True)
     title = sa.Column(sa.String)
     lvl_access = sa.Column(sa.Integer)
+    published = sa.Column(sa.Boolean)
     description = sa.Column(sa.Text)
 
     user = orm.relation('User')

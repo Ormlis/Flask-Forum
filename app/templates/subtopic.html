@@ -5,19 +5,46 @@
         {% if current_user.role >= 3%}
                 <a class="text_title shadow_box boxes text-center btn btn-dark"
                    href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/edit">Edit subtopic</a>
+                <a class="text_title shadow_box boxes text-center btn btn-dark"
+                   href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/delete">
+                    Delete subtopic</a>
         {% endif %}
     {% endif %}
     <div class="shadow_box boxes">
         <h1 class="text_title text-center">{{ topic.title }} / {{ subtopic.title }}</h1><br>
-        {% if current_user.is_authenticated %}
-            {% if current_user.role >= 1%}
-                    <a class="btn btn-secondary"
-                       href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/new">
-                        Create new post
-                    </a>
-            {% endif %}
-        {% endif %}
-        {% for post in subtopic.posts %}
+        <div class="field text_title text-center">
+            <h5>
+                {{ subtopic.description|safe }}
+            </h5>
+        </div>
+        <a class="btn btn-secondary"
+           href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/new">
+            Create new post
+        </a>
+        <nav aria-label="...">
+          <ul class="pagination">
+              {% if current_page.has_previous %}
+              <li class="page-item">
+                  <a class="page-link" href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/page/{{current_page.previous_page}}" tabindex="-1">Previous</a>
+                </li>
+              {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+              {% endif %}
+              {% if current_page.has_next %}
+              <li class="page-item">
+                  <a class="page-link" href="/topic/{{ topic.id }}/subtopic/{{subtopic.id}}/page/{{current_page.next_page}}" tabindex="-1">Next</a>
+                </li>
+              {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1">Next</a>
+                </li>
+              {% endif %}
+          </ul>
+        </nav>
+        {% for post in current_page.items %}
+        {% if post.published %}
         <div class="field text_title text-left">
             <h3 class="text_title"> {{ post.title }} </h3>
             <div class="margin-left">
@@ -30,6 +57,24 @@
                 See more...
             </a>
         </div>
+        {% elif current_user.is_authenticated and current_user.role >= 2 %}
+        <div class="field text_title text-left">
+            <h3 class="text_title"> {{ post.title }} </h3>
+            <div class="margin-left">
+                <h5 class="text-muted">
+                    {{ post.description|safe }}
+                </h5>
+             </div>
+            <a class="btn btn-success"
+            href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/{{post.id}}/publish">
+                Accept
+            </a>
+            <a class="btn btn-danger"
+            href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/{{post.id}}/delete">
+                Decline
+            </a>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

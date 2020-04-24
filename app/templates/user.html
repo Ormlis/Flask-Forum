@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="boxes shadow_box">
+        <div class="text-center text_title">
+            <h1>
+            {% if user.role == 0 %}
+                Пользователь -
+            {% elif user.role == 1 %}
+                Проверенный -
+            {% elif user.role == 2 %}
+                Модератор -
+            {% elif user.role == 3 %}
+                Администратор -
+            {% endif %}
+            {{ user.nickname }}
+            </h1>
+        </div>
+
+        <div class="avatar_div">
+            {% if user.image %}
+                <a style="color: #CA6D75"
+                   href="#"
+                    class="avatar">
+                    <img src="{{ url_for('static', filename='img/avatars_users/' + user.id|string + '.jpg') }}" alt="">
+                </a>
+            {% else %}
+                <a style="color: #CA6D75"
+                   href="#" class="avatar">
+                    <img src="{{ url_for('static', filename='img/avatars_users/default.jpg') }}" alt="">
+                </a>
+            {% endif %}
+        </div>
+
+        <div class="profile_info">
+            <p>
+                Nickname: {{ user.nickname }}
+            </p>
+            {% if current_user == user or current_user.role >= 3 %}
+            <p>
+                Email: {{ user.email }}
+            </p>
+            {% endif %}
+            <p>
+                Surname: {{ user.surname }}
+            </p>
+            <p>
+                Name: {{ user.name }}
+            </p>
+            <p>
+                Age: {{ user.age }}
+            </p>
+            <p>
+                Reputation: {{ user.reputation }}
+            </p>
+            {% if current_user == user or current_user.role >= 3 %}
+            <a class="btn btn-secondary" href="/user/{{user.id}}/edit">
+                Edit profile
+            </a>
+            {% if user.role < 1 %}
+            <a class="btn btn-info" href="/user/certify">
+                Confirm email
+            </a>
+            {% endif %}
+            <a class="btn btn-light" href="/user/change_password">
+                Change password
+            </a>
+            {% endif %}
+            {% if current_user.role >= 3 %}
+                {% if user.role < 3 %}
+                    <a class="btn btn-success" href="/user/{{user.id}}/upgrade">
+                        Upgrade role
+                    </a>
+                {% endif %}
+                {% if user.role > 0 %}
+                    <a class="btn btn-danger" href="/user/{{user.id}}/downgrade">
+                        Downgrade role
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

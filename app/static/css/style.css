@@ -16,9 +16,28 @@
     color: azure;
 }
 
+.avatar_div {
+    padding: 25px;
+    width: 100%;
+    text-align: center;
+}
+
+.avatar {
+    margin: auto;
+}
+
 .field {
     border: 5px solid dimgray;
     margin-top: 15px;
+    padding: 10px;
+}
+
+.profile_info {
+    text-align: center;
+    display: inline-block;
+    width: 100%;
+    color: lightgray;
+    font-size: 20px;
 }
 
 .full_width {
@@ -28,4 +47,28 @@
 
 .margin-left {
     margin-left: 5%;
+}
+
+.avatar_comment {
+    text-align: center;
+    max-width: 90%;
+}
+
+.comment-info {
+    max-width: 15%;
+    width: 10%;
+}
+
+.btn-reputation {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+
+.page-item {
+    background-color: dimgray;
+}
+
+.page-link {
+    background-color: dimgray;
+    color: azure;
 }

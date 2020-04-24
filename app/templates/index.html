@@ -30,6 +30,8 @@
                 {% if current_user.role >= 3%}
                         <a class="btn btn-secondary" href="/topic/{{topic.id}}/subtopic/new">
                             Create new subtopic</a>
+                        <a class="btn btn-info"
+                           href="/topic/{{ topic.id }}/delete">Delete topic</a>
                 {% endif %}
             {% endif %}
         </div>
