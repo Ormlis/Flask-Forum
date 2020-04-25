@@ -46,6 +46,7 @@
         {% for post in current_page.items %}
         {% if post.published %}
         <div class="field text_title text-left">
+            <h4 class="text-muted" style="float: right">Posted by <a class="text-muted" href="/user/{{post.user.id}}">{{ post.user.nickname }}</a></h4>
             <h3 class="text_title"> {{ post.title }} </h3>
             <div class="margin-left">
                 <h5 class="text-muted">
@@ -59,6 +60,7 @@
         </div>
         {% elif current_user.is_authenticated and current_user.role >= 2 %}
         <div class="field text_title text-left">
+            <h4 class="text-muted" style="float: right">Posted by {{ post.user.nickname }}</h4>
             <h3 class="text_title"> {{ post.title }} </h3>
             <div class="margin-left">
                 <h5 class="text-muted">
