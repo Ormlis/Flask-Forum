@@ -356,7 +356,7 @@ def user_edit(user_id):
         if form.avatar.data:
             user.image = f'{user_id}.jpg'
             form.avatar.data.save(
-                os.path.join(Config.APP_ROOT, 'static', f'img/avatars_users/{user.image}')
+                os.path.join('app/static', f'img/avatars_users/{user.image}')
             )
         session.merge(user)
         session.commit()
