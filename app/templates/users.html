@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="boxes shadow_box">
+        <nav aria-label="...">
+          <ul class="pagination">
+              {% if current_page.has_previous %}
+              <li class="page-item">
+                  <a class="page-link" href="/users/page/{{current_page.previous_page}}" tabindex="-1">Previous</a>
+                </li>
+              {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1">Previous</a>
+                </li>
+              {% endif %}
+              {% if current_page.has_next %}
+              <li class="page-item">
+                  <a class="page-link" href="/users/page/{{current_page.next_page}}" tabindex="-1">Next</a>
+                </li>
+              {% else %}
+              <li class="page-item disabled">
+                  <a class="page-link" href="#" tabindex="-1">Next</a>
+                </li>
+              {% endif %}
+          </ul>
+        </nav>
+        <table class="table table-dark">
+          <thead>
+            <tr>
+              <th scope="col">id</th>
+              <th scope="col">Nickname</th>
+              <th scope="col">Email</th>
+              <th scope="col">Role</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for user in current_page.items %}
+            <tr>
+                <td>
+                    {{ user.id }}
+                </td>
+                <td>
+                    <a href="/user/{{user.id}}" class="text_title">{{ user.nickname }}</a>
+                </td>
+                <td>
+                    {{ user.email }}
+                </td>
+                <td>
+                    {% if user.role == 0 %}
+                        Пользователь
+                    {% elif user.role == 1 %}
+                        Проверенный
+                    {% elif user.role == 2 %}
+                        Модератор
+                    {% elif user.role == 3 %}
+                        Администратор
+                    {% endif %}
+                </td>
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
+    </div>
+{% endblock %}
