@@ -356,7 +356,7 @@ def user_edit(user_id):
         if form.avatar.data:
             user.image = f'{user_id}.jpg'
             form.avatar.data.save(
-                os.path.join(Config.APP_ROOT, 'static', f'img/avatars_users/{user.image}')
+                os.path.join('app/static', f'img/avatars_users/{user.image}')
             )
         session.merge(user)
         session.commit()
@@ -456,3 +456,14 @@ def upgrade(user_id):
     session.merge(user)
     session.commit()
     return redirect(f'/user/{user_id}')
+
+
+@blueprint.route('/users')
+@blueprint.route('/users/page/<int:page>')
+@login_required
+def users_page(page=1):
+    if current_user.role < 3:
+        abort(403)
+    session = create_session()
+    current_page = paginate(session.query(User), page, 30)
+    return render_template('users.html', title='', current_page=current_page)

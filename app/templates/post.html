@@ -12,7 +12,8 @@
         {% endif %}
     {% endif %}
     <div class="shadow_box boxes">
-        <h1 class="text_title text-center">{{ topic.title }} /
+        <h4 class="text-muted" style="float: right">Posted by <a class="text-muted" href="/user/{{post.user.id}}">{{ post.user.nickname }}</a></h4>
+        <h1 class="text_title">{{ topic.title }} /
             {{ subtopic.title }} / {{ post.title }}</h1><br>
         <div class="field text_title text-center">
             <h5>

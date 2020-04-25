@@ -15,17 +15,18 @@
 <header>
     <nav class="navbar navbar-dark bg-dark">
         <a class="navbar-brand" href="/"><h1>TechnoForum</h1></a>
+        <p>
         {% if current_user.is_authenticated %}
-            <p>
+            {% if current_user.role >= 3 %}
+            <a class="navbar-brand" href="/users">Users</a>
+            {% endif %}
                 <a class="navbar-brand" href="/user/{{ current_user.id }}">{{ current_user.nickname }}</a>
                 <a class="btn btn-light" href="/logout">Logout</a>
-            </p>
         {% else %}
-            <p>
                 <a class="btn btn-secondary " href="/registration">Sign up</a>
                 <a class="btn btn-light" href="/login">Sign in</a>
-            </p>
         {% endif %}
+        </p>
     </nav>
 </header>
 <!-- Begin page content -->
