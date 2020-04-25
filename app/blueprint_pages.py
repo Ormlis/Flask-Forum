@@ -225,7 +225,8 @@ def subtopic_page(topic_id, subtopic_id, page=1):
     if not subtopic:
         abort(404)
     topic = session.query(Topic).filter(Topic.id == topic_id).first()
-    current_page = paginate(session.query(Post).filter(Post.subtopic_id == subtopic_id), page, 3)
+    lvl_access = current_user.role if current_user.is_authenticated else -1
+    current_page = paginate(session.query(Post).filter(Post.subtopic_id == subtopic_id, Post.lvl_access <= lvl_access), page, 3)
     return render_template('subtopic.html', title=topic.title + ' - ' + subtopic.title, topic=topic,
                            subtopic=subtopic, current_page=current_page)
 
