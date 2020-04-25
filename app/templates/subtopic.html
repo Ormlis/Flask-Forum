@@ -17,10 +17,12 @@
                 {{ subtopic.description|safe }}
             </h5>
         </div>
+        {% if current_user.is_authenticated %}
         <a class="btn btn-secondary"
            href="/topic/{{topic.id}}/subtopic/{{subtopic.id}}/post/new">
             Create new post
         </a>
+        {% endif %}
         <nav aria-label="...">
           <ul class="pagination">
               {% if current_page.has_previous %}

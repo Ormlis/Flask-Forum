@@ -88,7 +88,7 @@ def add_topic():
         session.add(topic)
         session.commit()
         return redirect('/')
-    return render_template('edit_topic.html', title='Создание топика', form=form,
+    return render_template('edit_topic.html', title='Topic creating', form=form,
                            title_form='Create new topic')
 
 
@@ -111,7 +111,7 @@ def edit_topic(topic_id):
         session.merge(topic)
         session.commit()
         return redirect('/')
-    return render_template('edit_topic.html', title='Редактирование топика', form=form,
+    return render_template('edit_topic.html', title='Topic editing', form=form,
                            title_form='Edit topic')
 
 
@@ -133,7 +133,7 @@ def add_subtopic(topic_id):
         session.add(subtopic)
         session.commit()
         return redirect(f'/topic/{topic_id}/subtopic/{subtopic.id}')
-    return render_template('edit_topic.html', title='Создание раздела', form=form,
+    return render_template('edit_topic.html', title='Subtopic creating', form=form,
                            title_form='Create new subtopic')
 
 
@@ -157,7 +157,7 @@ def edit_subtopic(topic_id, subtopic_id):
         session.merge(subtopic)
         session.commit()
         return redirect(f'/topic/{topic_id}/subtopic/{subtopic.id}')
-    return render_template('edit_topic.html', title='Редактирование раздела', form=form,
+    return render_template('edit_topic.html', title='Subtopic editing', form=form,
                            title_form='Edit subtopic')
 
 
@@ -182,7 +182,7 @@ def add_post(topic_id, subtopic_id):
         session.add(new_post)
         session.commit()
         return redirect(f'/topic/{topic_id}/subtopic/{subtopic_id}/post/{new_post.id}')
-    return render_template('edit_post.html', title='Post creation', form=form,
+    return render_template('edit_post.html', title='Post creating', form=form,
                            title_form='Create new post')
 
 
@@ -212,7 +212,7 @@ def edit_post(topic_id, subtopic_id, post_id):
         session.merge(current_post)
         session.commit()
         return redirect(f'/topic/{topic_id}/subtopic/{subtopic_id}/post/{current_post.id}')
-    return render_template('edit_post.html', title='w', form=form,
+    return render_template('edit_post.html', title='Post editing', form=form,
                            title_form='Edit post')
 
 
@@ -225,8 +225,10 @@ def subtopic_page(topic_id, subtopic_id, page=1):
     if not subtopic:
         abort(404)
     topic = session.query(Topic).filter(Topic.id == topic_id).first()
-    lvl_access = current_user.role if current_user.is_authenticated else -1
-    current_page = paginate(session.query(Post).filter(Post.subtopic_id == subtopic_id, Post.lvl_access <= lvl_access), page, 3)
+    lvl_access = current_user.role if current_user.is_authenticated else 0
+    current_page = paginate(
+        session.query(Post).filter(Post.subtopic_id == subtopic_id, Post.lvl_access <= lvl_access),
+        page, 3)
     return render_template('subtopic.html', title=topic.title + ' - ' + subtopic.title, topic=topic,
                            subtopic=subtopic, current_page=current_page)
 
@@ -245,12 +247,13 @@ def post_page(topic_id, subtopic_id, post_id, page=1):
     topic = session.query(Topic).filter(Topic.id == topic_id).first()
     if not (post and subtopic and topic):
         abort(404)
-    if post.lvl_access > 1 and (current_user.is_authenticated and
+    if post.lvl_access > 1 and ((current_user.is_authenticated and
                                 current_user.role < post.lvl_access and
-                                current_user.id != post.author_id):
+                                current_user.id != post.author_id) or
+                                not current_user.is_authenticated):
         abort(403)
-    if (not current_user.is_authenticated) or (post.author_id != current_user.id and
-                                               not post.published):
+    if ((not current_user.is_authenticated or post.author_id != current_user.id)
+            and not post.published):
         abort(404)
 
     current_page = paginate(session.query(Comment).filter(Comment.post_id == post_id), page, 20)
@@ -467,4 +470,4 @@ def users_page(page=1):
         abort(403)
     session = create_session()
     current_page = paginate(session.query(User), page, 30)
-    return render_template('users.html', title='', current_page=current_page)
+    return render_template('users.html', title='Users', current_page=current_page)
